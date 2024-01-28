@@ -1,7 +1,7 @@
 import pygame
-from help_functions import import_csv_layout
+from help_functions import import_csv_layout, import_cut_graphics
 from config import tile_size
-from tiles import Tile
+from tiles import Tile, StaticTile
 
 
 class Level:
@@ -22,8 +22,9 @@ class Level:
                     y = row_index * tile_size
 
                     if type == 'terrain':
-                        # terrain_tile_list = import_cut_graphics()
-                        sprite = Tile(tile_size, x, y)
+                        terrain_tile_list = import_cut_graphics('data/tiles/terrain_tilemap.png')
+                        tile_surface = terrain_tile_list[int(cell)]
+                        sprite = StaticTile(tile_size, x, y, tile_surface)
                         sprite_group.add(sprite)
 
         return sprite_group

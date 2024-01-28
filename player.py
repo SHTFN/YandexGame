@@ -1,5 +1,4 @@
 import pygame
-from help_functions import import_folder
 from time import sleep
 
 
@@ -8,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
-        self.animation_speed = 0.15
+        self.animation_speed = 0.30
         self.image = self.animations['idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.Vector2(0, 0)

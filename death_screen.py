@@ -3,15 +3,13 @@ from config import WIDTH, HEIGHT, FPS
 import sys
 
 
-class Start_screen:
+class Death_screen:
     def __init__(self, surface):
         self.surface = surface
-        #self.clock = clock
+
         self.clock = pygame.time.Clock()
 
-        text = ['Catch the diamond',
-                '',
-                'Press any key to start the game']
+        text = ['You died']
 
         bg = pygame.transform.scale(pygame.image.load('data/tiles/start_screen/bg.jpg'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))
@@ -30,10 +28,9 @@ class Start_screen:
     def run(self):
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN or \
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN or \
                         event.type == pygame.MOUSEBUTTONDOWN:
-                    return
+                    pygame.quit()
+                    sys.exit()
             pygame.display.flip()
             self.clock.tick(FPS)

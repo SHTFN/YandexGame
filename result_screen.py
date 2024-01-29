@@ -3,15 +3,15 @@ from config import WIDTH, HEIGHT, FPS
 import sys
 
 
-class Start_screen:
-    def __init__(self, surface):
+class Result_screen:
+    def __init__(self, surface, coin_amount):
         self.surface = surface
-        #self.clock = clock
+
         self.clock = pygame.time.Clock()
 
-        text = ['Catch the diamond',
+        text = ['You won!',
                 '',
-                'Press any key to start the game']
+                f'You collected {coin_amount} coins!']
 
         bg = pygame.transform.scale(pygame.image.load('data/tiles/start_screen/bg.jpg'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))

@@ -1,5 +1,5 @@
 import pygame
-from help_functions import import_cut_graphics, import_folder
+from help_functions import import_folder
 from random import randint
 from config import WIDTH
 
@@ -82,7 +82,6 @@ class Water:
         water_start = -WIDTH
         water_tile_width = 18
         tile_x_amount = int((level_width + WIDTH) / water_tile_width)
-        print(tile_x_amount)
         self.water_sprites = pygame.sprite.Group()
 
         for tile in range(tile_x_amount):

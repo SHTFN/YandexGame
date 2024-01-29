@@ -1,19 +1,25 @@
 import pygame
-from help_functions import import_csv_layout, import_cut_graphics
+from help_functions import import_csv_layout
 from config import tile_size, WIDTH, HEIGHT
 from tiles import Tile, StaticTile, Crate, Coin, Enemy, Water
 from player import Player
+from result_screen import Result_screen
 
 
 class Level:
-    def __init__(self, level_data, surface):
+    def __init__(self, level_data, surface, change_coins, cur_coins, change_health):
         self.surface = surface
         self.world_shift = 0
 
         player_layer = import_csv_layout(level_data['player'])
         self.player = pygame.sprite.GroupSingle()
         self.goal = pygame.sprite.GroupSingle()
-        self.player_setup(player_layer)
+        self.player_setup(player_layer, change_health)
+
+        self.change_coins = change_coins
+        self.cur_coins = cur_coins
+
+        self.win = False
 
         terrain_layer = import_csv_layout(level_data['terrain'])
         self.terrain_sprites = self.create_tile_group(terrain_layer, 'terrain')
@@ -79,21 +85,19 @@ class Level:
                         sprite = Enemy(tile_size, x, y)
                     elif type == 'constraints':
                         sprite = Tile(tile_size, x, y)
-                    #elif type == 'player_constraints':
-                    #    sprite = Crate(tile_size, x, y)
 
                     sprite_group.add(sprite)
 
         return sprite_group
 
-    def player_setup(self, layout):
+    def player_setup(self, layout, change_health):
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
                 x = col_index * tile_size
                 y = row_index * tile_size
 
                 if cell == '111':
-                    sprite = Player((x, y))
+                    sprite = Player((x, y), change_health)
                     self.player.add(sprite)
                 elif cell == '67':
                     hat_surface = pygame.image.load('data/tiles/diamond/tile.png')
@@ -163,6 +167,61 @@ class Level:
             self.world_shift = 0
             player.speed = 8
 
+    def check_death(self):
+        if self.player.sprite.rect.y > HEIGHT:
+            text = ['You died',
+                    'Press any key to restart']
+            font = pygame.font.Font(None, 30)
+            text_coord = 50
+            for line in text:
+                string_rendered = font.render(line, 1, pygame.Color('white'))
+                intro_rect = string_rendered.get_rect()
+                text_coord += 10
+                intro_rect.top = text_coord
+                intro_rect.x = 10
+                text_coord += intro_rect.height
+                self.surface.blit(string_rendered, intro_rect)
+
+    def check_win(self):
+        if pygame.sprite.spritecollide(self.player.sprite, self.goal, False):
+            self.win = True
+            if True:
+                text = ['You won!',
+                        f'You collected {self.cur_coins} coins']
+                font = pygame.font.Font(None, 30)
+                text_coord = 50
+                for line in text:
+                    string_rendered = font.render(line, 1, pygame.Color('white'))
+                    intro_rect = string_rendered.get_rect()
+                    text_coord += 10
+                    intro_rect.top = text_coord
+                    intro_rect.x = 10
+                    text_coord += intro_rect.height
+                    self.surface.blit(string_rendered, intro_rect)
+            #   sleep(5)
+            result_screen = Result_screen(self.surface, self.cur_coins)
+            result_screen.run()
+
+    def check_coin_collisions(self):
+        coins = pygame.sprite.spritecollide(self.player.sprite, self.coins_sprites, True)
+        if coins:
+            for _ in coins:
+                self.cur_coins += 1
+                self.change_coins(1)
+
+    def check_enemy_collision(self):
+        enemy_collisions = pygame.sprite.spritecollide(self.player.sprite, self.enemies_sprites, False)
+        if enemy_collisions:
+            for enemy in enemy_collisions:
+                enemy_center = enemy.rect.centery
+                enemy_top = enemy.rect.top
+                player_bottom = self.player.sprite.rect.bottom
+                if enemy_top < player_bottom < enemy_center and self.player.sprite.direction.y >= 0:
+                    self.player.sprite.direction.y = -7
+                    enemy.kill()
+                else:
+                    self.player.sprite.get_damage()
+
     def run(self):
         bg = pygame.transform.scale(pygame.image.load('data/tiles/sky.png'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))
@@ -189,10 +248,17 @@ class Level:
 
         self.player.draw(self.surface)
         self.player.update()
+        # self.check_damage()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.scroll_x()
         self.goal.draw(self.surface)
         self.goal.update(self.world_shift)
+
+        self.check_death()
+        self.check_win()
+
+        self.check_coin_collisions()
+        self.check_enemy_collision()
 
         self.water.draw(self.surface)

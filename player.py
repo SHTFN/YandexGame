@@ -4,7 +4,7 @@ from time import sleep
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos, change_health):
         super().__init__()
         self.import_character_assets()
         self.frame_index = 0
@@ -23,6 +23,11 @@ class Player(pygame.sprite.Sprite):
         self.on_ceiling = False
         self.on_left = False
         self.on_right = False
+
+        self.change_health = change_health
+        self.invincible = False
+        self.invincibility_duration = 400
+        self.hurt_time = 0
 
     def import_character_assets(self):
         character_path = 'data/sprites/Player sprites/'
@@ -57,11 +62,11 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
-            #self.rect.y -= 1
+            # self.rect.y -= 1
             self.facing_to_right = False
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
-            #self.rect.y -= 1
+            # self.rect.y -= 1
             self.facing_to_right = True
         else:
             self.direction.x = 0
@@ -87,12 +92,26 @@ class Player(pygame.sprite.Sprite):
 
         if self.attack:
             self.status = 'attack'
-            #sleep(self.animation_speed)
+            # sleep(self.animation_speed)
             self.attack = False
+
+    def get_damage(self):
+        if not self.invincible:
+            self.change_health(-10)
+            #self.player.sprite.direction.y = -7
+            self.invincible = True
+            self.hurt_time = pygame.time.get_ticks()
+
+    def invincibility_timer(self):
+        if self.invincible:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.hurt_time > self.invincibility_duration:
+                self.invincible = False
 
     def update(self):
         self.get_input()
-        #self.rect.x += self.direction.x * self.speed
-        #self.apply_gravity()
+        # self.rect.x += self.direction.x * self.speed
+        # self.apply_gravity()
         self.get_status()
         self.animate()
+        self.invincibility_timer()

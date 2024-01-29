@@ -1,4 +1,5 @@
 import pygame
+from help_functions import import_folder
 from time import sleep
 
 
@@ -11,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.Vector2(0, 0)
-        self.speed = 8
+        self.speed = 5
         self.gravity = 0.8
         self.jump_speed = -16
 
@@ -19,6 +20,9 @@ class Player(pygame.sprite.Sprite):
         self.facing_to_right = True
         self.attack = False
         self.on_ground = True
+        self.on_ceiling = False
+        self.on_left = False
+        self.on_right = False
 
     def import_character_assets(self):
         character_path = 'data/sprites/Player sprites/'
@@ -53,11 +57,11 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
-            self.rect.y -= 1
+            #self.rect.y -= 1
             self.facing_to_right = False
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
-            self.rect.y -= 1
+            #self.rect.y -= 1
             self.facing_to_right = True
         else:
             self.direction.x = 0

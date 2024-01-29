@@ -1,7 +1,7 @@
 import pygame
 from help_functions import import_csv_layout, import_cut_graphics
-from config import tile_size, WIDTH
-from tiles import Tile, StaticTile, Crate, Coin, Enemy
+from config import tile_size, WIDTH, HEIGHT
+from tiles import Tile, StaticTile, Crate, Coin, Enemy, Water
 from player import Player
 
 
@@ -36,6 +36,9 @@ class Level:
         enemies_layer = import_csv_layout(level_data['enemies'])
         self.enemies_sprites = self.create_tile_group(enemies_layer, 'enemies')
 
+        level_width = len(terrain_layer[0]) * tile_size
+        self.water = Water(HEIGHT - 40, level_width)
+
     def create_tile_group(self, layout, type):
         sprite_group = pygame.sprite.Group()
 
@@ -46,17 +49,28 @@ class Level:
                     y = row_index * tile_size
 
                     if type == 'terrain':
-                        terrain_tile_list = import_cut_graphics('data/tiles/terrain_tilemap.png')
-                        tile_surface = terrain_tile_list[int(cell)]
-                        sprite = StaticTile(tile_size, x, y, tile_surface)
+                        #terrain_tile_list = import_cut_graphics('data/tiles/tilemap.png')
+                        #tile_surface = terrain_tile_list[int(cell)]
+                        if int(cell) < 10:
+                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/terrain/tile_000{cell}.png'))
+                        elif int(cell) < 100:
+                            sprite = StaticTile(tile_size, x, y,
+                                                pygame.image.load(f'data/tiles/terrain/tile_00{cell}.png'))
+                        elif int(cell) < 1000:
+                            sprite = StaticTile(tile_size, x, y,
+                                                pygame.image.load(f'data/tiles/terrain/tile_0{cell}.png'))
                     elif type == 'grass':
-                        grass_tile_list = import_cut_graphics('data/tiles/terrain_tilemap.png')
-                        tile_surface = grass_tile_list[int(cell)]
-                        sprite = StaticTile(tile_size, x, y, tile_surface)
+                        #grass_tile_list = import_cut_graphics('data/tiles/tilemap.png')
+                        #tile_surface = grass_tile_list[int(cell)]
+                        #print(cell)
+                        sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/grass/tile_0{cell}.png'))
                     elif type == 'trees':
-                        trees_tile_list = import_cut_graphics('data/tiles/terrain_tilemap.png')
-                        tile_surface = trees_tile_list[int(cell)]
-                        sprite = StaticTile(tile_size, x, y, tile_surface)
+                        #trees_tile_list = import_cut_graphics('data/tiles/tilemap.png')
+                        #tile_surface = trees_tile_list[int(cell)]
+                        if int(cell) < 100:
+                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/trees/tile_00{cell}.png'))
+                        else:
+                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/trees/tile_0{cell}.png'))
                     elif type == 'crates':
                         sprite = Crate(tile_size, x, y)
                     elif type == 'coins':
@@ -65,6 +79,8 @@ class Level:
                         sprite = Enemy(tile_size, x, y)
                     elif type == 'constraints':
                         sprite = Tile(tile_size, x, y)
+                    #elif type == 'player_constraints':
+                    #    sprite = Crate(tile_size, x, y)
 
                     sprite_group.add(sprite)
 
@@ -79,8 +95,8 @@ class Level:
                 if cell == '111':
                     sprite = Player((x, y))
                     self.player.add(sprite)
-                elif cell == '112':
-                    hat_surface = pygame.image.load('data/sprites/mar.png')
+                elif cell == '67':
+                    hat_surface = pygame.image.load('data/tiles/diamond/tile.png')
                     sprite = StaticTile(tile_size, x, y, hat_surface)
                     self.goal.add(sprite)
 
@@ -148,6 +164,9 @@ class Level:
             player.speed = 8
 
     def run(self):
+        bg = pygame.transform.scale(pygame.image.load('data/tiles/sky.png'), (WIDTH, HEIGHT))
+        self.surface.blit(bg, (0, 0))
+
         self.terrain_sprites.draw(self.surface)
         self.terrain_sprites.update(self.world_shift)
 
@@ -175,3 +194,5 @@ class Level:
         self.scroll_x()
         self.goal.draw(self.surface)
         self.goal.update(self.world_shift)
+
+        self.water.draw(self.surface)

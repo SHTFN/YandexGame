@@ -1,6 +1,7 @@
 import pygame
 from help_functions import import_cut_graphics, import_folder
 from random import randint
+from config import WIDTH
 
 
 class Tile(pygame.sprite.Sprite):
@@ -22,7 +23,7 @@ class StaticTile(Tile):
 
 class Crate(StaticTile):
     def __init__(self, size, x, y):
-        super().__init__(size, x, y, import_cut_graphics('data/tiles/terrain_tilemap.png')[26])
+        super().__init__(size, x, y, pygame.image.load('data/tiles/crates/tile_0026.png'))
         offset_y = y + size
         self.rect = self.image.get_rect(bottomleft=(x, offset_y))
 
@@ -57,7 +58,7 @@ class Enemy(AnimatedTile):
     def __init__(self, size, x, y):
         super().__init__(size, x, y, 'data/tiles/enemies/run')
         self.rect.y += size - self.image.get_size()[1]
-        self.speed = randint(3, 5)
+        self.speed = randint(2, 4)
 
     def move(self):
         self.rect.x += self.speed
@@ -74,3 +75,28 @@ class Enemy(AnimatedTile):
         self.animate()
         self.move()
         self.flip_image()
+
+
+class Water:
+    def __init__(self, top, level_width):
+        water_start = -WIDTH
+        water_tile_width = 18
+        tile_x_amount = int((level_width + WIDTH) / water_tile_width)
+        print(tile_x_amount)
+        self.water_sprites = pygame.sprite.Group()
+
+        for tile in range(tile_x_amount):
+            x = tile * water_tile_width + water_start
+            #print(x)
+            y = top + water_tile_width
+            #print(y)
+
+            sprite = AnimatedTile(18, x, y, 'data/tiles/water')
+            #print(sprite)
+            self.water_sprites.add(sprite)
+        #print(len(self.))
+
+    def draw(self, surface):
+        self.water_sprites.update(0)
+        self.water_sprites.draw(surface)
+

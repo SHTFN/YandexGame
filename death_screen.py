@@ -14,6 +14,7 @@ class Death_screen:
         bg = pygame.transform.scale(pygame.image.load('data/tiles/start_screen/bg.jpg'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))
 
+        # Рендер текста
         font = pygame.font.Font(None, 30)
         text_coord = 50
         for line in text:

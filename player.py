@@ -1,6 +1,5 @@
 import pygame
 from help_functions import import_folder
-from time import sleep
 
 
 class Player(pygame.sprite.Sprite):
@@ -29,6 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.invincibility_duration = 400
         self.hurt_time = 0
 
+    # Импорт всех спрайтов игрока
     def import_character_assets(self):
         character_path = 'data/sprites/Player sprites/'
         self.animations = {'idle': [], 'run': [], 'jump': [], 'attack': [], 'fall': []}
@@ -37,6 +37,7 @@ class Player(pygame.sprite.Sprite):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
+    # Анимирование движения игрока
     def animate(self):
         animation = self.animations[self.status]
         self.frame_index += self.animation_speed
@@ -50,23 +51,24 @@ class Player(pygame.sprite.Sprite):
             flip_image = pygame.transform.flip(image, True, False)
             self.image = flip_image
 
+    # Создание гравитации
     def apply_gravity(self):
         self.direction.y += self.gravity
         self.rect.y += self.direction.y
 
+    # Прыжок
     def jump(self):
         self.direction.y = self.jump_speed
 
+    # Передвижение игрока
     def get_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
-            # self.rect.y -= 1
             self.facing_to_right = False
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
-            # self.rect.y -= 1
             self.facing_to_right = True
         else:
             self.direction.x = 0
@@ -77,6 +79,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_f]:
             self.attack = True
 
+    # Отслеживание действий игрока
     def get_status(self):
         if self.direction.y < 0:
             self.status = 'jump'
@@ -92,16 +95,16 @@ class Player(pygame.sprite.Sprite):
 
         if self.attack:
             self.status = 'attack'
-            # sleep(self.animation_speed)
             self.attack = False
 
+    # Получение урона
     def get_damage(self):
         if not self.invincible:
             self.change_health(-10)
-            #self.player.sprite.direction.y = -7
             self.invincible = True
             self.hurt_time = pygame.time.get_ticks()
 
+    # Неуязвимость после получения урона
     def invincibility_timer(self):
         if self.invincible:
             current_time = pygame.time.get_ticks()
@@ -110,8 +113,6 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.get_input()
-        # self.rect.x += self.direction.x * self.speed
-        # self.apply_gravity()
         self.get_status()
         self.animate()
         self.invincibility_timer()

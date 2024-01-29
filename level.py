@@ -11,54 +11,57 @@ class Level:
         self.surface = surface
         self.world_shift = 0
 
+        # Создание стартовой и финальной точек игрока
         player_layer = import_csv_layout(level_data['player'])
         self.player = pygame.sprite.GroupSingle()
         self.goal = pygame.sprite.GroupSingle()
         self.player_setup(player_layer, change_health)
 
-        self.change_coins = change_coins
+        self.change_coins = change_coins    # Функция увеличения количества монет
         self.cur_coins = cur_coins
 
         self.win = False
 
+        # Создание групп слоёв спрайтов
+        # Земля
         terrain_layer = import_csv_layout(level_data['terrain'])
         self.terrain_sprites = self.create_tile_group(terrain_layer, 'terrain')
-
+        # Трава
         grass_layer = import_csv_layout(level_data['grass'])
         self.grass_sprites = self.create_tile_group(grass_layer, 'grass')
-
+        # Ящики и прочие предметы
         crate_layer = import_csv_layout(level_data['crates'])
         self.crate_sprites = self.create_tile_group(crate_layer, 'crates')
-
+        # Монеты
         coins_layer = import_csv_layout(level_data['coins'])
         self.coins_sprites = self.create_tile_group(coins_layer, 'coins')
-
+        # Деревья
         trees_layer = import_csv_layout(level_data['trees'])
         self.trees_sprites = self.create_tile_group(trees_layer, 'trees')
-
+        # Ограничители движения врагов
         constraints_layer = import_csv_layout(level_data['constraints'])
         self.constraints_sprites = self.create_tile_group(constraints_layer, 'constraints')
-
+        # Враги
         enemies_layer = import_csv_layout(level_data['enemies'])
         self.enemies_sprites = self.create_tile_group(enemies_layer, 'enemies')
-
+        # Длина уровня для отрисовки воды
         level_width = len(terrain_layer[0]) * tile_size
         self.water = Water(HEIGHT - 40, level_width)
 
+    # Добавление спрайтов в соответствующие группы
     def create_tile_group(self, layout, type):
         sprite_group = pygame.sprite.Group()
 
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
-                if cell != '-1':
+                if cell != '-1':    # Если клетка не пустая
                     x = col_index * tile_size
                     y = row_index * tile_size
 
                     if type == 'terrain':
-                        #terrain_tile_list = import_cut_graphics('data/tiles/tilemap.png')
-                        #tile_surface = terrain_tile_list[int(cell)]
                         if int(cell) < 10:
-                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/terrain/tile_000{cell}.png'))
+                            sprite = StaticTile(tile_size, x, y,
+                                                pygame.image.load(f'data/tiles/terrain/tile_000{cell}.png'))
                         elif int(cell) < 100:
                             sprite = StaticTile(tile_size, x, y,
                                                 pygame.image.load(f'data/tiles/terrain/tile_00{cell}.png'))
@@ -66,17 +69,14 @@ class Level:
                             sprite = StaticTile(tile_size, x, y,
                                                 pygame.image.load(f'data/tiles/terrain/tile_0{cell}.png'))
                     elif type == 'grass':
-                        #grass_tile_list = import_cut_graphics('data/tiles/tilemap.png')
-                        #tile_surface = grass_tile_list[int(cell)]
-                        #print(cell)
                         sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/grass/tile_0{cell}.png'))
                     elif type == 'trees':
-                        #trees_tile_list = import_cut_graphics('data/tiles/tilemap.png')
-                        #tile_surface = trees_tile_list[int(cell)]
                         if int(cell) < 100:
-                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/trees/tile_00{cell}.png'))
+                            sprite = StaticTile(tile_size, x, y,
+                                                pygame.image.load(f'data/tiles/trees/tile_00{cell}.png'))
                         else:
-                            sprite = StaticTile(tile_size, x, y, pygame.image.load(f'data/tiles/trees/tile_0{cell}.png'))
+                            sprite = StaticTile(tile_size, x, y,
+                                                pygame.image.load(f'data/tiles/trees/tile_0{cell}.png'))
                     elif type == 'crates':
                         sprite = Crate(tile_size, x, y)
                     elif type == 'coins':
@@ -90,6 +90,7 @@ class Level:
 
         return sprite_group
 
+    # Добавление стартовой и конечной точек игрока
     def player_setup(self, layout, change_health):
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
@@ -104,11 +105,13 @@ class Level:
                     sprite = StaticTile(tile_size, x, y, hat_surface)
                     self.goal.add(sprite)
 
+    # Коллизия врагов
     def enemy_collision(self):
         for enemy in self.enemies_sprites.sprites():
             if pygame.sprite.spritecollide(enemy, self.constraints_sprites, False):
                 enemy.reverse()
 
+    # Горизонтальная коллизия игрока
     def horizontal_movement_collision(self):
         player = self.player.sprite
         player.rect.x += player.direction.x * player.speed
@@ -131,6 +134,7 @@ class Level:
         if player.on_right and (player.rect.right > self.current_x or player.direction.x <= 0):
             player.on_right = False
 
+    # Вертикальная коллизия игрока
     def vertical_movement_collision(self):
         player = self.player.sprite
         player.apply_gravity()
@@ -152,6 +156,7 @@ class Level:
         if player.on_ceiling and player.direction.y > 0.1:
             player.on_ceiling = False
 
+    # Движение камеры
     def scroll_x(self):
         player = self.player.sprite
         player_x = player.rect.centerx
@@ -167,6 +172,7 @@ class Level:
             self.world_shift = 0
             player.speed = 8
 
+    # Проверка смерти игрока
     def check_death(self):
         if self.player.sprite.rect.y > HEIGHT:
             text = ['You died',
@@ -182,6 +188,7 @@ class Level:
                 text_coord += intro_rect.height
                 self.surface.blit(string_rendered, intro_rect)
 
+    # Проверка победы игрока
     def check_win(self):
         if pygame.sprite.spritecollide(self.player.sprite, self.goal, False):
             self.win = True
@@ -202,6 +209,7 @@ class Level:
             result_screen = Result_screen(self.surface, self.cur_coins)
             result_screen.run()
 
+    # Коллизия монет с игроком
     def check_coin_collisions(self):
         coins = pygame.sprite.spritecollide(self.player.sprite, self.coins_sprites, True)
         if coins:
@@ -209,6 +217,7 @@ class Level:
                 self.cur_coins += 1
                 self.change_coins(1)
 
+    # Коллизия врагов с игроком
     def check_enemy_collision(self):
         enemy_collisions = pygame.sprite.spritecollide(self.player.sprite, self.enemies_sprites, False)
         if enemy_collisions:
@@ -216,12 +225,14 @@ class Level:
                 enemy_center = enemy.rect.centery
                 enemy_top = enemy.rect.top
                 player_bottom = self.player.sprite.rect.bottom
+                # Проверка того, атакует ли игрок врагов путём прыжка на них, или же получает от них урон
                 if enemy_top < player_bottom < enemy_center and self.player.sprite.direction.y >= 0:
                     self.player.sprite.direction.y = -7
                     enemy.kill()
                 else:
                     self.player.sprite.get_damage()
 
+    # Отрисовка всех спрайтов
     def run(self):
         bg = pygame.transform.scale(pygame.image.load('data/tiles/sky.png'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))

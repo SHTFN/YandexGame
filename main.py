@@ -12,27 +12,25 @@ class Game:
     def __init__(self, surface):
         self.surface = surface
 
-        self.max_health = 100
-        self.cur_health = 100
-        self.coins = 0
+        self.max_health = 100  # Максимальное количество здоровья
+        self.cur_health = 100  # Количества хдоровья в данный момент
+        self.coins = 0  # Количество монет
 
         self.level = Level(level_1, surface, self.change_coin_value, self.coins, self.change_health)
 
+        self.statusbar = Statusbar(self.surface)  # Создание статусбара
 
-
-        self.statusbar = Statusbar(self.surface)
-
-    def run_start_screen(self):
+    def run_start_screen(self):  # Запуск стартового экрана
         self.start_screen = Start_screen(self.surface)
         self.start_screen.run()
 
-    def change_coin_value(self, amount):
+    def change_coin_value(self, amount):  # Изменение количества собранных монет
         self.coins += amount
 
-    def change_health(self, amount):
+    def change_health(self, amount):  # Изменение здоровья игрока
         self.cur_health += amount
 
-    def check_game_over(self):
+    def check_game_over(self):  # Проверка смерти персонажа
         if self.cur_health <= 0:
             self.cur_health = 100
             self.coins = 0
@@ -47,14 +45,13 @@ class Game:
         self.check_game_over()
 
 
-
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     game = Game(screen)
 
-    game.run_start_screen()
+    game.run_start_screen()  # Стартовый экран
 
     while True:
         for event in pygame.event.get():
@@ -62,7 +59,7 @@ if __name__ == '__main__':
                 pygame.quit()
                 sys.exit()
 
-        game.run()
+        game.run()  # Запуск уровня
 
         pygame.display.update()
         clock.tick(FPS)

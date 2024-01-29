@@ -1,9 +1,9 @@
 from csv import reader
-from config import tile_size
 from os import walk
 import pygame
 
 
+# Импорт .csv карт
 def import_csv_layout(path):
     terrain_map = []
     with open(path) as map:
@@ -13,6 +13,7 @@ def import_csv_layout(path):
         return terrain_map
 
 
+# Импорт папки
 def import_folder(path):
     surface_list = []
 

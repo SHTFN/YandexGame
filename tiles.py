@@ -60,8 +60,11 @@ class Coin(AnimatedTile):
 
 # Класс врагов
 class Enemy(AnimatedTile):
-    def __init__(self, size, x, y):
-        super().__init__(size, x, y, 'data/tiles/enemies/run')
+    def __init__(self, size, x, y, type):
+        if type == '21':
+            super().__init__(size, x, y, 'data/sprites/enemies/21')
+        elif type == '25':
+            super().__init__(size, x, y, 'data/sprites/enemies/25')
         self.rect.y += size - self.image.get_size()[1]
         self.speed = randint(2, 4)
 

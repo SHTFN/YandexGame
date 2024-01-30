@@ -2,21 +2,24 @@ import pygame
 import sys
 from config import *
 from level import Level
-from game_data import level_1
+from game_data import *
 from start_screen import Start_screen
 from death_screen import Death_screen
 from statusbar import Statusbar
 
 
 class Game:
-    def __init__(self, surface):
+    def __init__(self, surface, level_num):
         self.surface = surface
 
         self.max_health = 100  # Максимальное количество здоровья
         self.cur_health = 100  # Количества хдоровья в данный момент
         self.coins = 0  # Количество монет
 
-        self.level = Level(level_1, surface, self.change_coin_value, self.coins, self.change_health)
+        if level_num == 1:
+            self.level = Level(level_1, surface, self.change_coin_value, self.coins, self.change_health)
+        elif level_num == 2:
+            self.level = Level(level_2, surface, self.change_coin_value, self.coins, self.change_health)
 
         self.statusbar = Statusbar(self.surface)  # Создание статусбара
 
@@ -46,10 +49,11 @@ class Game:
 
 
 if __name__ == '__main__':
+    level_num = int(input('Введите уровень уровня (на данный момент их 2): '))
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    game = Game(screen)
+    game = Game(screen, level_num)
 
     game.run_start_screen()  # Стартовый экран
 

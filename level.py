@@ -4,6 +4,7 @@ from config import tile_size, WIDTH, HEIGHT
 from tiles import Tile, StaticTile, Crate, Coin, Enemy, Water
 from player import Player
 from result_screen import Result_screen
+from death_screen import Death_screen
 
 
 class Level:
@@ -17,7 +18,7 @@ class Level:
         self.goal = pygame.sprite.GroupSingle()
         self.player_setup(player_layer, change_health)
 
-        self.change_coins = change_coins    # Функция увеличения количества монет
+        self.change_coins = change_coins  # Функция увеличения количества монет
         self.cur_coins = cur_coins
 
         self.win = False
@@ -54,7 +55,7 @@ class Level:
 
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
-                if cell != '-1':    # Если клетка не пустая
+                if cell != '-1':  # Если клетка не пустая
                     x = col_index * tile_size
                     y = row_index * tile_size
 
@@ -82,7 +83,7 @@ class Level:
                     elif type == 'coins':
                         sprite = Coin(tile_size, x, y, 'data/tiles/coins')
                     elif type == 'enemies':
-                        sprite = Enemy(tile_size, x, y)
+                        sprite = Enemy(tile_size, x, y, cell)
                     elif type == 'constraints':
                         sprite = Tile(tile_size, x, y)
 
@@ -175,18 +176,8 @@ class Level:
     # Проверка смерти игрока
     def check_death(self):
         if self.player.sprite.rect.y > HEIGHT:
-            text = ['You died',
-                    'Press any key to restart']
-            font = pygame.font.Font(None, 30)
-            text_coord = 50
-            for line in text:
-                string_rendered = font.render(line, 1, pygame.Color('white'))
-                intro_rect = string_rendered.get_rect()
-                text_coord += 10
-                intro_rect.top = text_coord
-                intro_rect.x = 10
-                text_coord += intro_rect.height
-                self.surface.blit(string_rendered, intro_rect)
+            death_screen = Death_screen(self.surface)
+            death_screen.run()
 
     # Проверка победы игрока
     def check_win(self):

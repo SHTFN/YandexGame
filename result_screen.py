@@ -31,10 +31,9 @@ class Result_screen:
     def run(self):
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN or \
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN or \
                         event.type == pygame.MOUSEBUTTONDOWN:
-                    return
+                    pygame.quit()
+                    sys.exit()
             pygame.display.flip()
             self.clock.tick(FPS)

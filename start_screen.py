@@ -6,7 +6,6 @@ import sys
 class Start_screen:
     def __init__(self, surface):
         self.surface = surface
-        #self.clock = clock
         self.clock = pygame.time.Clock()
 
         text = ['Catch the diamond',

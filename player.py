@@ -1,5 +1,6 @@
 import pygame
 from help_functions import import_folder
+from random import randrange
 
 
 class Player(pygame.sprite.Sprite):
@@ -28,10 +29,12 @@ class Player(pygame.sprite.Sprite):
         self.invincibility_duration = 400
         self.hurt_time = 0
 
+
+
     # Импорт всех спрайтов игрока
     def import_character_assets(self):
         character_path = 'data/sprites/Player sprites/'
-        self.animations = {'idle': [], 'run': [], 'jump': [], 'attack': [], 'fall': []}
+        self.animations = {'idle': [], 'run': [], 'jump': [], 'fall': []}
 
         for animation in self.animations.keys():
             full_path = character_path + animation
@@ -58,6 +61,8 @@ class Player(pygame.sprite.Sprite):
 
     # Прыжок
     def jump(self):
+        s = pygame.mixer.Sound(f'data/sounds/jump/{randrange(1, 4)}.wav')
+        s.play()
         self.direction.y = self.jump_speed
 
     # Передвижение игрока
@@ -75,9 +80,6 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_SPACE] and self.direction.y == 0.0:
             self.jump()
-
-        if keys[pygame.K_f]:
-            self.attack = True
 
     # Отслеживание действий игрока
     def get_status(self):

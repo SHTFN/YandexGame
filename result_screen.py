@@ -11,7 +11,8 @@ class Result_screen:
 
         text = ['You won!',
                 '',
-                f'You collected {coin_amount} coins!']
+                f'You collected {coin_amount} coins!',
+                'Press any key to quit']
 
         bg = pygame.transform.scale(pygame.image.load('data/tiles/start_screen/bg.jpg'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))

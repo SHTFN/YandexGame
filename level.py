@@ -5,6 +5,7 @@ from tiles import Tile, StaticTile, Crate, Coin, Enemy, Water
 from player import Player
 from result_screen import Result_screen
 from death_screen import Death_screen
+from random import randrange
 
 
 class Level:
@@ -218,9 +219,14 @@ class Level:
                 player_bottom = self.player.sprite.rect.bottom
                 # Проверка того, атакует ли игрок врагов путём прыжка на них, или же получает от них урон
                 if enemy_top < player_bottom < enemy_center and self.player.sprite.direction.y >= 0:
+                    s = pygame.mixer.Sound(f'data/sounds/damage_to_enemy/{randrange(1, 4)}.wav')
+                    s.play()
                     self.player.sprite.direction.y = -7
                     enemy.kill()
                 else:
+                    s = pygame.mixer.Sound(f'data/sounds/damage_to_player/{randrange(1, 4)}.wav')
+                    s.play()
+                    s.set_volume(0.2)
                     self.player.sprite.get_damage()
 
     # Отрисовка всех спрайтов

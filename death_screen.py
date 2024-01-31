@@ -9,7 +9,8 @@ class Death_screen:
 
         self.clock = pygame.time.Clock()
 
-        text = ['You died']
+        text = ['You died',
+                'Press any key to quit']
 
         bg = pygame.transform.scale(pygame.image.load('data/tiles/start_screen/bg.jpg'), (WIDTH, HEIGHT))
         self.surface.blit(bg, (0, 0))

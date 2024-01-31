@@ -14,6 +14,6 @@ Controls:
     D, → – right
     Space – jump
 
-Background music – [Bird Bone - Призраки зимы (8bit coveer by Trashcat Orange)](https://www.youtube.com/watch?v=HqRR5QECV4M&t=7s)
+Background music – [Bird Bone - Призраки зимы (8bit coveer by Trashcat Orange)](https://youtu.be/HqRR5QECV4M?si=-NLpl35icGM--tdz)
 
 [SFX by leohpaz](https://leohpaz.itch.io/minifantasy-dungeon-sfx-pack)

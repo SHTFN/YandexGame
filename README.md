@@ -14,6 +14,8 @@ Controls:
     D, → – right
     Space – jump
 
+Game sprites – [Pixel Platformer](https://kenney.nl/assets/pixel-platformer)
+
 Background music – [Bird Bone - Призраки зимы (8bit coveer by Trashcat Orange)](https://youtu.be/HqRR5QECV4M?si=-NLpl35icGM--tdz)
 
 [SFX by leohpaz](https://leohpaz.itch.io/minifantasy-dungeon-sfx-pack)

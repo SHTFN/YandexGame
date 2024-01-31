@@ -54,10 +54,10 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     game = Game(screen, level_num)
-    pygame.mixer.music.load('data/music/Pasha_Krasniy_Vtoraya,_kotoraya_ne_gotova.mp3')
+    pygame.mixer.music.load('data/music/Bird_Bone_-_Prizraki_zimy_chiptune_cover.mp3')
 
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.set_volume(0.3)
     game.run_start_screen()  # Запуск стартового экрана
 
     while True:

@@ -2,7 +2,7 @@
 
 ### Created for Yandex Lyceum
 
-***"Catch the diamond!"** is* a game that is made as a pet-project for Yandex Lyceum.
+***"Catch the diamond!"** is* a game that is made as a pygame pet-project for Yandex Lyceum.
 
 The game includes 2 Mario style levels. You can also create your own level using Tiled because it is an open source game.
 

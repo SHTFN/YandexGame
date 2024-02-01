@@ -1,6 +1,6 @@
 # Catch the diamond!
 
-![Game logo](https://imgur.com/qXI4WSv)
+![Game logo](https://imgur.com/qXI4WSv.png)
 
 ### Created for Yandex Lyceum
 
